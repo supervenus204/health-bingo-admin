@@ -6,29 +6,56 @@ export const useUsers = () => {
   const {
     users,
     currentPage,
+    pageSize,
     searchTerm,
-    usersPerPage,
+    sortColumn,
+    sortDesc,
+    total,
+    totalPages,
     isLoading,
     error,
     setUsers,
+    setPagination,
     addUser,
     updateUser,
     removeUser,
     setCurrentPage,
+    setPageSize,
     setSearchTerm,
+    setSort,
     setLoading,
     setError,
-    getFilteredUsers,
-    getCurrentUsers,
-    getTotalPages,
   } = useUserStore();
 
   const fetchUsers = async () => {
     try {
       setLoading(true);
       setError(null);
-      const fetchedUsers = await userService.getUsers();
-      setUsers(fetchedUsers);
+      
+      const state = useUserStore.getState();
+      const params: {
+        sort?: string;
+        desc?: boolean;
+        pageNumber?: number;
+        pageSize?: number;
+        search?: string;
+      } = {
+        pageNumber: state.currentPage,
+        pageSize: state.pageSize,
+      };
+
+      if (state.sortColumn) {
+        params.sort = state.sortColumn;
+        params.desc = state.sortDesc;
+      }
+
+      if (state.searchTerm) {
+        params.search = state.searchTerm;
+      }
+
+      const response = await userService.getUsers(params);
+      setUsers(response.users);
+      setPagination(response.pagination);
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : 'Failed to fetch users';
@@ -38,11 +65,11 @@ export const useUsers = () => {
     }
   };
 
-  const createUser = async (userData: Partial<User>) => {
+  const createAdmin = async (userData: Partial<User>) => {
     try {
       setLoading(true);
       setError(null);
-      const newUser = await userService.createUser(userData);
+      const newUser = await userService.createAdmin(userData);
       addUser(newUser);
       return newUser;
     } catch (error) {
@@ -88,41 +115,24 @@ export const useUsers = () => {
     }
   };
 
-  const resetUserPassword = async (id: string) => {
-    try {
-      setLoading(true);
-      setError(null);
-      await userService.resetPassword(id);
-    } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : 'Failed to reset password';
-      setError(errorMessage);
-      throw error;
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const filteredUsers = getFilteredUsers();
-  const currentUsers = getCurrentUsers();
-  const totalPages = getTotalPages();
-
   return {
     users,
-    filteredUsers,
-    currentUsers,
     currentPage,
+    pageSize,
     searchTerm,
-    usersPerPage,
+    sortColumn,
+    sortDesc,
+    total,
     totalPages,
     isLoading,
     error,
     fetchUsers,
-    createUser,
+    createAdmin,
     editUser,
     deleteUser,
-    resetUserPassword,
     setCurrentPage,
+    setPageSize,
     setSearchTerm,
+    setSort,
   };
 };

@@ -7,7 +7,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import BingoCardManagement from './pages/BingoCardManagement';
-import Dashboard from './pages/Dashboard';
+import ChallengeManagement from './pages/ChallengeManagement';
 import Login from './pages/Login';
 import NotFound from './pages/NotFound';
 import PromoCodeManagement from './pages/PromoCodeManagement';
@@ -40,17 +40,7 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <MainLayout>
-                    <Dashboard />
-                  </MainLayout>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/dashboard"
-              element={
-                <ProtectedRoute>
-                  <MainLayout>
-                    <Dashboard />
+                    <UserManagement />
                   </MainLayout>
                 </ProtectedRoute>
               }
@@ -81,6 +71,16 @@ const App = () => (
                 <ProtectedRoute>
                   <MainLayout>
                     <BingoCardManagement />
+                  </MainLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/challenges"
+              element={
+                <ProtectedRoute>
+                  <MainLayout>
+                    <ChallengeManagement />
                   </MainLayout>
                 </ProtectedRoute>
               }

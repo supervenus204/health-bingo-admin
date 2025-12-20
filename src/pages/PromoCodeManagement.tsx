@@ -1,6 +1,7 @@
 import { usePromoCodes } from '@/hooks/usePromoCodes';
 import { CreatePromoCodeRequest } from '@/types';
 import React, { useEffect, useState } from 'react';
+import { Button } from '@/components/ui/button';
 
 const PromoCodeManagement: React.FC = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -22,7 +23,6 @@ const PromoCodeManagement: React.FC = () => {
     fetchPromoCodes,
     createPromoCode,
     editPromoCode,
-    deletePromoCode,
     togglePromoCodeStatus,
     setCurrentPage,
     setSearchTerm,
@@ -72,11 +72,6 @@ const PromoCodeManagement: React.FC = () => {
     setShowEditModal(true);
   };
 
-  const handleDelete = async (promoId: string) => {
-    if (confirm('Are you sure you want to delete this promo code?')) {
-      await deletePromoCode(promoId);
-    }
-  };
 
   const handleToggleStatus = async (promoId: string) => {
     await togglePromoCodeStatus(promoId);
@@ -93,119 +88,85 @@ const PromoCodeManagement: React.FC = () => {
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-gray-900">
+        <h1 className="text-3xl font-bold text-primary-blue">
           Promo Code Management
         </h1>
-        <button
-          onClick={() => setShowCreateModal(true)}
-          className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg font-medium"
-        >
-          + Create Promo Code
-        </button>
+        <div className="flex space-x-4">
+          <input
+            type="text"
+            placeholder="Search promo codes..."
+            value={searchTerm}
+            onChange={e => setSearchTerm(e.target.value)}
+            className="w-64 px-4 py-2 border border-gray-light-medium rounded-md focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-primary-green transition-all"
+          />
+          <Button
+            onClick={() => setShowCreateModal(true)}
+            variant="primaryGreen"
+            size="pill"
+          >
+            + Create Promo Code
+          </Button>
+        </div>
       </div>
 
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">
+        <div className="bg-red-50 border-l-4 border-error text-error px-4 py-3 rounded-md mb-6">
           {error}
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div className="bg-white rounded-lg shadow p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">
-            Active Codes
-          </h3>
-          <p className="text-3xl font-bold text-emerald-600">
-            {
-              promoCodes.filter(
-                p => !p.deleted && !isExpired(p.expiration_date)
-              ).length
-            }
-          </p>
-        </div>
-        <div className="bg-white rounded-lg shadow p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">
-            Total Codes
-          </h3>
-          <p className="text-3xl font-bold text-blue-600">
-            {promoCodes.length}
-          </p>
-        </div>
-        <div className="bg-white rounded-lg shadow p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">
-            Expired/Deleted
-          </h3>
-          <p className="text-3xl font-bold text-red-600">
-            {
-              promoCodes.filter(p => p.deleted || isExpired(p.expiration_date))
-                .length
-            }
-          </p>
-        </div>
-      </div>
-
-      <div className="mb-4">
-        <input
-          type="text"
-          placeholder="Search promo codes..."
-          value={searchTerm}
-          onChange={e => setSearchTerm(e.target.value)}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-        />
-      </div>
-
       {isLoading ? (
         <div className="text-center py-8">Loading promo codes...</div>
       ) : (
-        <div className="bg-white rounded-lg shadow overflow-hidden">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+        <div className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-light-medium">
+          <table className="min-w-full divide-y divide-gray-light-medium">
+            <thead className="bg-gray-very-light">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-very-dark uppercase tracking-wider">
                   Code
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-very-dark uppercase tracking-wider">
                   Usage Limit
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-very-dark uppercase tracking-wider">
                   Expiry Date
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-very-dark uppercase tracking-wider">
                   Created
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-very-dark uppercase tracking-wider">
                   Status
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-very-dark uppercase tracking-wider">
                   Actions
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="bg-white divide-y divide-gray-light-medium">
               {currentPromoCodes.map(promo => (
-                <tr key={promo.id} className="hover:bg-gray-50">
+                <tr key={promo.id} className="hover:bg-gray-very-light transition-colors">
                   <td className="px-6 py-4">
-                    <div className="text-sm font-bold text-gray-900 font-mono bg-gray-100 px-2 py-1 rounded">
+                    <div className="text-sm font-bold text-text-primary font-mono bg-gray-light px-2 py-1 rounded">
                       {promo.code}
                     </div>
                   </td>
-                  <td className="px-6 py-4 text-sm text-gray-900">
+                  <td className="px-6 py-4 text-sm text-text-primary">
                     {promo.usage_limit}
                   </td>
-                  <td className="px-6 py-4 text-sm text-gray-900">
+                  <td className="px-6 py-4 text-sm text-text-primary">
                     {formatDate(promo.expiration_date)}
                   </td>
-                  <td className="px-6 py-4 text-sm text-gray-900">
+                  <td className="px-6 py-4 text-sm text-text-primary">
                     {formatDate(promo.createdAt)}
                   </td>
                   <td className="px-6 py-4">
                     <span
-                      className={`px-2 py-1 text-xs rounded-full ${
+                      className={`px-2 py-1 text-xs rounded-full font-medium ${
                         promo.deleted
-                          ? 'bg-gray-100 text-gray-800'
+                          ? 'bg-gray-light text-gray-very-dark'
                           : isExpired(promo.expiration_date)
-                          ? 'bg-red-100 text-red-800'
-                          : 'bg-green-100 text-green-800'
+                          ? 'bg-red-100 text-error'
+                          : 'bg-bingo-mint text-bingo-forest'
                       }`}
                     >
                       {promo.deleted
@@ -218,25 +179,19 @@ const PromoCodeManagement: React.FC = () => {
                   <td className="px-6 py-4 text-sm font-medium space-x-2">
                     <button
                       onClick={() => handleEdit(promo)}
-                      className="text-blue-600 hover:text-blue-900"
+                      className="text-bingo-sky hover:text-bingo-navy transition-colors"
                     >
                       Edit
                     </button>
                     <button
                       onClick={() => handleToggleStatus(promo.id)}
-                      className={`${
+                      className={`transition-colors ${
                         promo.deleted
-                          ? 'text-green-600 hover:text-green-900'
-                          : 'text-red-600 hover:text-red-900'
+                          ? 'text-success hover:text-bingo-forest'
+                          : 'text-error hover:text-red-700'
                       }`}
                     >
                       {promo.deleted ? 'Restore' : 'Delete'}
-                    </button>
-                    <button
-                      onClick={() => handleDelete(promo.id)}
-                      className="text-red-600 hover:text-red-900"
-                    >
-                      Remove
                     </button>
                   </td>
                 </tr>
@@ -252,10 +207,10 @@ const PromoCodeManagement: React.FC = () => {
             <button
               key={page}
               onClick={() => setCurrentPage(page)}
-              className={`px-3 py-2 rounded ${
+              className={`px-3 py-2 rounded-full transition-all ${
                 currentPage === page
-                  ? 'bg-emerald-600 text-white'
-                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  ? 'bg-primary-green text-white'
+                  : 'bg-gray-light text-text-primary hover:bg-gray-light-medium'
               }`}
             >
               {page}
@@ -264,14 +219,13 @@ const PromoCodeManagement: React.FC = () => {
         </div>
       )}
 
-      {/* Create Modal */}
       {showCreateModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg max-w-md w-full p-6">
-            <h2 className="text-xl font-bold mb-4">Create New Promo Code</h2>
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg max-w-md w-full p-6 shadow-xl">
+            <h2 className="text-2xl font-bold text-primary-blue mb-4">Create New Promo Code</h2>
             <form onSubmit={handleCreateSubmit}>
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-text-secondary mb-2">
                   Expiration Duration (days)
                 </label>
                 <input
@@ -284,13 +238,13 @@ const PromoCodeManagement: React.FC = () => {
                       expiration_duration: parseInt(e.target.value),
                     })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-emerald-500 focus:border-emerald-500"
+                  className="w-full px-3 py-2 border border-gray-light-medium rounded-md focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-primary-green transition-all"
                   placeholder="e.g., 10 (expires in 10 days)"
                   required
                 />
               </div>
               <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-text-secondary mb-2">
                   Usage Limit
                 </label>
                 <input
@@ -303,7 +257,7 @@ const PromoCodeManagement: React.FC = () => {
                       usage_limit: parseInt(e.target.value),
                     })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-emerald-500 focus:border-emerald-500"
+                  className="w-full px-3 py-2 border border-gray-light-medium rounded-md focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-primary-green transition-all"
                   required
                 />
               </div>
@@ -311,14 +265,14 @@ const PromoCodeManagement: React.FC = () => {
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="flex-1 bg-emerald-600 text-white py-2 px-4 rounded-md hover:bg-emerald-700 disabled:opacity-50"
+                  className="flex-1 bg-primary-green text-white py-2 px-4 rounded-full hover:bg-bingo-forest disabled:opacity-50 transition-all font-medium"
                 >
                   {isLoading ? 'Creating...' : 'Create'}
                 </button>
                 <button
                   type="button"
                   onClick={() => setShowCreateModal(false)}
-                  className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400"
+                  className="flex-1 bg-gray-light text-text-primary py-2 px-4 rounded-full hover:bg-gray-light-medium transition-all font-medium"
                 >
                   Cancel
                 </button>
@@ -328,14 +282,13 @@ const PromoCodeManagement: React.FC = () => {
         </div>
       )}
 
-      {/* Edit Modal */}
       {showEditModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg max-w-md w-full p-6">
-            <h2 className="text-xl font-bold mb-4">Edit Promo Code</h2>
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg max-w-md w-full p-6 shadow-xl">
+            <h2 className="text-2xl font-bold text-primary-blue mb-4">Edit Promo Code</h2>
             <form onSubmit={handleEditSubmit}>
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-text-secondary mb-2">
                   Expiration Duration (days)
                 </label>
                 <input
@@ -348,13 +301,13 @@ const PromoCodeManagement: React.FC = () => {
                       expiration_duration: parseInt(e.target.value),
                     })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-emerald-500 focus:border-emerald-500"
+                  className="w-full px-3 py-2 border border-gray-light-medium rounded-md focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-primary-green transition-all"
                   placeholder="e.g., 10 (expires in 10 days)"
                   required
                 />
               </div>
               <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-text-secondary mb-2">
                   Usage Limit
                 </label>
                 <input
@@ -367,7 +320,7 @@ const PromoCodeManagement: React.FC = () => {
                       usage_limit: parseInt(e.target.value),
                     })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-emerald-500 focus:border-emerald-500"
+                  className="w-full px-3 py-2 border border-gray-light-medium rounded-md focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-primary-green transition-all"
                   required
                 />
               </div>
@@ -375,7 +328,7 @@ const PromoCodeManagement: React.FC = () => {
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="flex-1 bg-emerald-600 text-white py-2 px-4 rounded-md hover:bg-emerald-700 disabled:opacity-50"
+                  className="flex-1 bg-primary-green text-white py-2 px-4 rounded-full hover:bg-bingo-forest disabled:opacity-50 transition-all font-medium"
                 >
                   {isLoading ? 'Updating...' : 'Update'}
                 </button>
@@ -385,7 +338,7 @@ const PromoCodeManagement: React.FC = () => {
                     setShowEditModal(false);
                     setEditingPromoCode(null);
                   }}
-                  className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400"
+                  className="flex-1 bg-gray-light text-text-primary py-2 px-4 rounded-full hover:bg-gray-light-medium transition-all font-medium"
                 >
                   Cancel
                 </button>

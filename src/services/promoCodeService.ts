@@ -4,9 +4,7 @@ import {
   PromoCode,
   UpdatePromoCodeRequest,
 } from '@/types';
-
-const API_BASE_URL =
-  'https://healthbingo-backend-dev-69f9daf23457.herokuapp.com';
+import { API_BASE_URL } from '@/config';
 
 class PromoCodeService {
   private getAuthHeader(): Record<string, string> {
@@ -28,6 +26,11 @@ class PromoCodeService {
       },
       ...options,
     });
+
+    if (response.status === 401) {
+      window.location.href = '/login';
+      throw new Error('Unauthorized');
+    }
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({
@@ -62,7 +65,7 @@ class PromoCodeService {
     promoCodeData: UpdatePromoCodeRequest
   ): Promise<PromoCode> {
     return this.request<PromoCode>(`/api/promo/${id}`, {
-      method: 'PUT',
+      method: 'PATCH',
       body: JSON.stringify(promoCodeData),
     });
   }

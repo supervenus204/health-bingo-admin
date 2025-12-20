@@ -1,7 +1,5 @@
 import { AuthResponse, LoginRequest } from '@/types';
-
-const API_BASE_URL =
-  'https://healthbingo-backend-dev-69f9daf23457.herokuapp.com';
+import { API_BASE_URL } from '@/config';
 
 class AuthService {
   private async request<T>(

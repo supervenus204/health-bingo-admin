@@ -28,7 +28,14 @@ export default {
         foreground: 'hsl(var(--foreground))',
         primary: {
           DEFAULT: 'hsl(var(--primary))',
-          foreground: 'hsl(var(--primary-foreground))'
+          foreground: 'hsl(var(--primary-foreground))',
+          green: 'var(--color-primary-green)',
+          blue: 'var(--color-primary-blue)',
+          pink: 'var(--color-primary-pink)',
+          white: 'var(--color-primary-white)',
+          black: 'var(--color-primary-black)',
+          red: 'var(--color-primary-red)',
+          gold: 'var(--color-primary-gold)',
         },
         secondary: {
           DEFAULT: 'hsl(var(--secondary))',
@@ -54,6 +61,30 @@ export default {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))'
         },
+        bingo: {
+          coral: 'var(--color-bingo-coral)',
+          violet: 'var(--color-bingo-violet)',
+          sky: 'var(--color-bingo-sky)',
+          lime: 'var(--color-bingo-lime)',
+          mint: 'var(--color-bingo-mint)',
+          gold: 'var(--color-bingo-gold)',
+          forest: 'var(--color-bingo-forest)',
+          navy: 'var(--color-bingo-navy)',
+        },
+        gray: {
+          'very-light': 'var(--color-gray-very-light)',
+          light: 'var(--color-gray-light)',
+          'light-medium': 'var(--color-gray-light-medium)',
+          medium: 'var(--color-gray-medium)',
+          'medium-dark': 'var(--color-gray-medium-dark)',
+          dark: 'var(--color-gray-dark)',
+          darker: 'var(--color-gray-darker)',
+          'very-dark': 'var(--color-gray-very-dark)',
+        },
+        success: 'var(--color-success)',
+        error: 'var(--color-error)',
+        warning: 'var(--color-warning)',
+        info: 'var(--color-info)',
         sidebar: {
           DEFAULT: 'hsl(var(--sidebar-background))',
           foreground: 'hsl(var(--sidebar-foreground))',
@@ -67,7 +98,8 @@ export default {
       },
       fontFamily: {
         mono: ['JetBrains Mono', 'monospace'],
-        sans: ['Inter', 'sans-serif'],
+        sans: ['Poppins', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
+        display: ['Nunito', 'sans-serif'],
       },
       borderRadius: {
         lg: 'calc(var(--radius) + 2px)',

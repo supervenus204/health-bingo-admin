@@ -5,7 +5,6 @@ import { useNavigate } from 'react-router-dom';
 const SignIn: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [role] = useState('admin');
 
   const navigate = useNavigate();
   const { login, isLoading, error } = useAuth();
@@ -14,7 +13,7 @@ const SignIn: React.FC = () => {
     e.preventDefault();
 
     try {
-      await login({ email, password, role });
+      await login({ email, password, role: 'admin' });
       navigate('/dashboard');
     } catch (error) {
       console.error('Login failed:', error);
@@ -22,50 +21,50 @@ const SignIn: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 to-blue-50 flex items-center justify-center p-4">
-      <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8">
+    <div className="min-h-screen bg-gradient-to-br from-bingo-mint to-bingo-sky/20 flex items-center justify-center p-4">
+      <div className="max-w-md w-full bg-white rounded-lg shadow-xl p-8 border border-gray-light-medium">
         <div className="text-center mb-8">
           <img
-            src="https://d64gsuwffb70l.cloudfront.net/68bb5074d29f4ea4e372ac3c_1757106340834_7cde93bf.webp"
+            src="/icon.png"
             alt="Health Bingo"
-            className="w-16 h-16 mx-auto mb-4 rounded-xl"
+            className="w-16 h-16 mx-auto mb-4 rounded-lg"
           />
-          <h1 className="text-3xl font-bold text-gray-900">Admin Portal</h1>
-          <p className="text-gray-600 mt-2">Sign in to manage Health Bingo</p>
+          <h1 className="text-3xl font-bold text-primary-blue">Admin Portal</h1>
+          <p className="text-text-secondary mt-2">Sign in to manage Health Bingo</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+            <div className="bg-red-50 border-l-4 border-error text-error px-4 py-3 rounded-md">
               {error}
             </div>
           )}
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-text-secondary mb-2">
               Email Address
             </label>
             <input
               type="email"
               value={email}
               onChange={e => setEmail(e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-              placeholder="seniordev55@gmail.com"
+              className="w-full px-4 py-3 border border-gray-light-medium rounded-md focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-primary-green transition-all"
+              placeholder="Input your email"
               required
               disabled={isLoading}
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-text-secondary mb-2">
               Password
             </label>
             <input
               type="password"
               value={password}
               onChange={e => setPassword(e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-              placeholder="••••••••"
+              className="w-full px-4 py-3 border border-gray-light-medium rounded-md focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-primary-green transition-all"
+              placeholder="Input your password"
               required
               disabled={isLoading}
             />
@@ -74,7 +73,7 @@ const SignIn: React.FC = () => {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3 px-4 rounded-lg transition-colors disabled:opacity-50"
+            className="w-full bg-primary-green hover:bg-bingo-forest text-white font-medium py-3 px-4 rounded-full transition-all hover:shadow-md disabled:opacity-50"
           >
             {isLoading ? 'Signing In...' : 'Sign In'}
           </button>
