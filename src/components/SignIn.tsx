@@ -14,7 +14,7 @@ const SignIn: React.FC = () => {
 
     try {
       await login({ email, password, role: 'admin' });
-      navigate('/dashboard');
+      navigate('/users');
     } catch (error) {
       console.error('Login failed:', error);
     }
