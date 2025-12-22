@@ -107,10 +107,49 @@ export interface MonthlyRevenue {
   revenue: number;
 }
 
+export interface PaymentHistoryUser {
+  id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+}
+
+export interface PaymentHistoryChallenge {
+  id: string;
+  organizer_id: string;
+  title: string;
+  plan: string;
+  duration: number;
+  card_size: number;
+  status: string;
+  image: string | null;
+  category_id: string;
+  invitation_code: string;
+  payment_intent_id: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface PaymentHistory {
+  id: string;
+  user_id: string;
+  stripe_payment_id: string;
+  amount: number;
+  currency: string;
+  status: string;
+  payment_intent: string;
+  type: string;
+  created_at: string;
+  updated_at: string;
+  user: PaymentHistoryUser;
+  challenge?: PaymentHistoryChallenge;
+}
+
 export interface DateRangeRevenue {
   startDate: string;
   endDate: string;
   revenue: number;
+  paymentHistory?: PaymentHistory[];
 }
 
 export interface TotalRevenue {

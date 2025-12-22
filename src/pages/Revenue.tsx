@@ -9,7 +9,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from '@/components/ui/chart';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
 
 const Revenue: React.FC = () => {
   const {
@@ -46,6 +46,21 @@ const Revenue: React.FC = () => {
     });
   };
 
+  const formatWeeklyDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const month = date.toLocaleDateString('en-US', { month: 'short' });
+    const day = date.getDate();
+    const weekNumber = Math.ceil(day / 7);
+    return `${month}/${weekNumber}`;
+  };
+
+  const formatMonthlyDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const month = date.toLocaleDateString('en-US', { month: 'short' });
+    const year = date.getFullYear();
+    return `${month}/${year}`;
+  };
+
   const getChartData = () => {
     if (period === 'daily') {
       return dailyRevenue.map(item => ({
@@ -55,13 +70,13 @@ const Revenue: React.FC = () => {
       }));
     } else if (period === 'weekly') {
       return weeklyRevenue.map(item => ({
-        date: `Week of ${formatDate(item.week)}`,
+        date: formatWeeklyDate(item.week),
         revenue: item.revenue / 100,
         fullDate: item.week,
       }));
     } else if (period === 'monthly') {
       return monthlyRevenue.map(item => ({
-        date: formatDate(item.month),
+        date: formatMonthlyDate(item.month),
         revenue: item.revenue / 100,
         fullDate: item.month,
       }));
@@ -96,7 +111,7 @@ const Revenue: React.FC = () => {
   const chartConfig = {
     revenue: {
       label: 'Revenue',
-      color: 'hsl(var(--chart-1))',
+      color: '#07901e',
     },
   };
 
@@ -238,7 +253,7 @@ const Revenue: React.FC = () => {
               </CardHeader>
               <CardContent>
                 <ChartContainer config={chartConfig} className="h-[350px]">
-                  <LineChart data={chartData}>
+                  <BarChart data={chartData}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis
                       dataKey="date"
@@ -254,22 +269,15 @@ const Revenue: React.FC = () => {
                     <ChartTooltip
                       content={
                         <ChartTooltipContent
-                          formatter={(value) => [
-                            `$${Number(value).toLocaleString()}`,
-                            'Revenue',
-                          ]}
+                          formatter={(value) => `$${Number(value).toLocaleString()}`}
                         />
                       }
                     />
-                    <Line
-                      type="monotone"
+                    <Bar
                       dataKey="revenue"
-                      stroke="var(--color-revenue)"
-                      strokeWidth={2}
-                      dot={{ r: 4 }}
-                      activeDot={{ r: 6 }}
+                      fill="var(--color-revenue)"
                     />
-                  </LineChart>
+                  </BarChart>
                 </ChartContainer>
               </CardContent>
             </Card>
@@ -296,9 +304,80 @@ const Revenue: React.FC = () => {
                     <tbody>
                       {tableData.map((item, index) => (
                         <tr key={index} className="border-b hover:bg-gray-50">
-                          <td className="p-3">{formatDate(item.date)}</td>
+                          <td className="p-3">
+                            {period === 'monthly'
+                              ? formatMonthlyDate(item.date)
+                              : period === 'weekly'
+                              ? formatWeeklyDate(item.date)
+                              : formatDate(item.date)}
+                          </td>
                           <td className="p-3 text-right font-medium">
                             {formatCurrency(item.revenue)}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {period === 'range' && dateRangeRevenue && dateRangeRevenue.paymentHistory && (
+            <Card className="mb-6">
+              <CardHeader>
+                <CardTitle>Payment History</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="overflow-x-auto">
+                  <table className="w-full border-collapse">
+                    <thead>
+                      <tr className="border-b">
+                        <th className="text-left p-3 font-semibold">When</th>
+                        <th className="text-right p-3 font-semibold">Amount</th>
+                        <th className="text-left p-3 font-semibold">User</th>
+                        <th className="text-left p-3 font-semibold">Challenge</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {dateRangeRevenue.paymentHistory.map((payment) => (
+                        <tr key={payment.id} className="border-b hover:bg-gray-50">
+                          <td className="p-3">
+                            {new Date(payment.created_at).toLocaleString('en-US', {
+                              month: 'short',
+                              day: 'numeric',
+                              year: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit',
+                            })}
+                          </td>
+                          <td className="p-3 text-right font-medium">
+                            {formatCurrency(payment.amount)}
+                          </td>
+                          <td className="p-3">
+                            <div>
+                              <div className="font-medium">
+                                {payment.user.first_name} {payment.user.last_name}
+                              </div>
+                              <div className="text-sm text-text-secondary">
+                                {payment.user.email}
+                              </div>
+                            </div>
+                          </td>
+                          <td className="p-3">
+                            {payment.challenge ? (
+                              <div>
+                                <div className="font-medium">{payment.challenge.title}</div>
+                                <div className="text-sm text-text-secondary">
+                                  {payment.challenge.plan} • {payment.challenge.duration} weeks • {payment.challenge.card_size}x{payment.challenge.card_size}
+                                </div>
+                                <div className="text-xs text-text-secondary mt-1">
+                                  Status: {payment.challenge.status}
+                                </div>
+                              </div>
+                            ) : (
+                              <span className="text-text-secondary">-</span>
+                            )}
                           </td>
                         </tr>
                       ))}
