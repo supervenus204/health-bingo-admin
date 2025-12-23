@@ -69,7 +69,7 @@ export const CreateBingoCardModal: React.FC<CreateBingoCardModalProps> = ({
                 style={{ backgroundColor: formData.color }}
               >
                 <div
-                  className="text-2xl font-bold"
+                  className="text-2xl font-bold text-center px-1 leading-tight"
                   style={{
                     color: formData.font_color,
                   }}
