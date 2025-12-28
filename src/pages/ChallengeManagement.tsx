@@ -1,16 +1,16 @@
-import { useChallenges } from '@/hooks/useChallenges';
-import React, { useState, useMemo, useCallback } from 'react';
-import { Spinner } from '@/components/ui/spinner';
-import { Button } from '@/components/ui/button';
-import { Challenge, ChallengeStatus } from '@/types';
 import SortableTable, { SortableColumn, SortDirection } from '@/components/SortableTable';
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { MoreVertical, Play, Trash2, Edit } from 'lucide-react';
+import { Spinner } from '@/components/ui/spinner';
+import { useChallenges } from '@/hooks/useChallenges';
+import { Challenge, ChallengeStatus } from '@/types';
+import { Edit, MoreVertical, Play, Trash2 } from 'lucide-react';
+import React, { useCallback, useMemo, useState } from 'react';
 
 const ChallengeManagement: React.FC = () => {
   const {
@@ -47,7 +47,7 @@ const ChallengeManagement: React.FC = () => {
   const getValidStatusTransitions = (currentStatus: ChallengeStatus): ChallengeStatus[] => {
     const transitions: Record<ChallengeStatus, ChallengeStatus[]> = {
       unpaid: ['pending', 'finish'],
-      pending: ['unpaid', 'active', 'inactive', 'finish'],
+      pending: ['unpaid', 'finish'],
       active: ['inactive', 'finish'],
       inactive: ['active', 'finish'],
       finish: [],
@@ -243,14 +243,14 @@ const ChallengeManagement: React.FC = () => {
                 {(challenge.status === 'pending' ||
                   challenge.status === 'active' ||
                   challenge.status === 'inactive') && (
-                  <DropdownMenuItem
-                    onClick={() => handleStartNextWeek(challenge.id)}
-                    disabled={actionLoading === challenge.id}
-                  >
-                    <Play className="mr-2 h-4 w-4" />
-                    Start Next Week
-                  </DropdownMenuItem>
-                )}
+                    <DropdownMenuItem
+                      onClick={() => handleStartNextWeek(challenge.id)}
+                      disabled={actionLoading === challenge.id}
+                    >
+                      <Play className="mr-2 h-4 w-4" />
+                      Start Next Week
+                    </DropdownMenuItem>
+                  )}
                 {getValidStatusTransitions(challenge.status).map(status => {
                   const option = statusOptions.find(opt => opt.value === status);
                   if (!option) return null;
@@ -312,11 +312,10 @@ const ChallengeManagement: React.FC = () => {
           <button
             key={option.value}
             onClick={() => setSelectedStatus(option.value)}
-            className={`px-4 py-2 rounded-full font-medium transition-all ${
-              selectedStatus === option.value
+            className={`px-4 py-2 rounded-full font-medium transition-all ${selectedStatus === option.value
                 ? 'bg-primary-green text-white'
                 : 'bg-gray-light text-text-primary hover:bg-gray-light-medium'
-            }`}
+              }`}
           >
             {option.label}
           </button>
