@@ -181,6 +181,10 @@ export interface Challenge {
   invitation_code: string;
   payment_intent_id: string | null;
   promo_code: string | null;
+  starting_day_of_week?: string;
+  current_week?: number | null;
+  total_invitations?: number;
+  joined_count?: number;
   createdAt: string;
   updatedAt: string;
   organizer?: ChallengeOrganizer;

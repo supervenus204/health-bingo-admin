@@ -194,22 +194,69 @@ const ChallengeManagement: React.FC = () => {
         ),
       },
       {
-        key: 'duration',
-        label: 'Duration',
+        key: 'week',
+        label: 'Week',
+        sortable: false,
+        render: (_, challenge) => {
+          const currentWeek = challenge.current_week ?? 0;
+          return (
+            <span className="text-sm text-text-primary">
+              {currentWeek}/{challenge.duration}
+            </span>
+          );
+        },
+      },
+      {
+        key: 'card_size',
+        label: 'Card Size',
         sortable: true,
         render: (_, challenge) => (
           <span className="text-sm text-text-primary">
-            {challenge.duration} weeks
+            {challenge.card_size}
           </span>
         ),
       },
       {
         key: 'invitation_code',
         label: 'Invitation Code',
-        sortable: true,
+        sortable: false,
         render: (_, challenge) => (
           <span className="text-sm font-mono text-text-primary">
             {challenge.invitation_code}
+          </span>
+        ),
+      },
+      {
+        key: 'players',
+        label: 'Players',
+        sortable: false,
+        render: (_, challenge) => {
+          const joined = challenge.joined_count ?? 0;
+          const total = challenge.total_invitations ?? 0;
+          return (
+            <span className="text-sm text-text-primary">
+              {joined}/{total}
+            </span>
+          );
+        },
+      },
+      {
+        key: 'starting_day',
+        label: 'Starting Day',
+        sortable: true,
+        render: (_, challenge) => (
+          <span className="text-sm text-text-primary capitalize">
+            {challenge.starting_day_of_week || 'N/A'}
+          </span>
+        ),
+      },
+      {
+        key: 'promo_code',
+        label: 'Promo Code',
+        sortable: true,
+        render: (_, challenge) => (
+          <span className="text-sm font-mono text-text-primary">
+            {challenge.promo_code || 'N/A'}
           </span>
         ),
       },
@@ -218,9 +265,14 @@ const ChallengeManagement: React.FC = () => {
         label: 'Created',
         sortable: true,
         render: (_, challenge) => (
-          <span className="text-sm text-text-secondary">
-            {formatDate(challenge.createdAt)}
-          </span>
+          <div>
+            <span className="text-sm text-text-secondary">
+              {formatDate(challenge.createdAt)}
+            </span>
+            <div className="text-xs text-text-secondary">
+              Updated: {formatDate(challenge.updatedAt)}
+            </div>
+          </div>
         ),
       },
       {
